@@ -4,16 +4,34 @@ using UnityEngine.AI;
 
 namespace _Scripts
 {
-    public class Boss : MonoBehaviour
+    public class Enemy : MonoBehaviour
     {
-        [SerializeField] private GameObject target;
+        private GameObject _target;
         [SerializeField] private int live = 100;
         [SerializeField] private Animator animationBoss;
+        private void OnEnable()
+        {
+            _target = GameObject.Find("Target");
+        }
         private void Start()
         {
-            GetComponent<NavMeshAgent>().SetDestination(target.transform.position);
-            animationBoss = GetComponent<Animator>();
-            animationBoss.SetBool("IsMoving",true);
+            if (_target!=null)
+            {
+                GetComponent<NavMeshAgent>().SetDestination(_target.transform.position);
+                animationBoss = GetComponent<Animator>();
+                animationBoss.SetBool("IsMoving",true);
+            }
+            else
+            {
+                print("error");
+            }
+
+        }
+
+
+
+        private void OnDisable()
+        {
         }
         private void Update()
         {
@@ -30,10 +48,10 @@ namespace _Scripts
 
         private void Damage()
         {
-            target?.GetComponent<Target>().RecibeDamage(20);
+            _target?.GetComponent<Target>().RecibeDamage(2);
         }
         
-        private void RecibeDamage(int damage=2)
+        private void RecibeDamage(int damage=20)
         {
             live-=damage;
         }
